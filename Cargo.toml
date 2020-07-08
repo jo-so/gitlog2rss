@@ -1,0 +1,19 @@
+[package]
+name = "gitlog2rss"
+version = "0.1.0"
+authors = ["Jörg Sommer <joerg@jo-so.de>"]
+edition = "2018"
+description = "Create an RSS feed from git log"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+chrono = "0.4.12"
+clap = "3.0.0-beta.1"
+env_logger = "0.7.1"
+git2 = "0.13.6"
+humantime = "2.0.1"
+log = "0.4.8"
+rss = "1.9.0"
+url = "2.1.1"
+yaml-rust = "0.4.4"
