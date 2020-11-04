@@ -52,7 +52,7 @@ fn main() -> Result<(), Box<dyn error::Error + 'static>> {
         .author(crate_authors!(", "))
         .about(crate_description!())
         .arg(
-            Arg::with_name("conf")
+            Arg::new("conf")
                 .short('c')
                 .long("conf")
                 .takes_value(true)
@@ -60,24 +60,24 @@ fn main() -> Result<(), Box<dyn error::Error + 'static>> {
                 .required(true)
                 .about("config file")
         ).arg(
-            Arg::with_name("debug")
+            Arg::new("debug")
                 .short('d')
                 .long("debug")
                 .about("Print debug messages")
         ).arg(
-            Arg::with_name("prefix")
+            Arg::new("prefix")
                 .short('p')
                 .long("prefix")
                 .takes_value(true)
                 .value_name("PREFIX")
                 .about("PREFIX gets removed from the beginning of file names")
         ).arg(
-            Arg::with_name("pretty")
+            Arg::new("pretty")
                 .short('y')
                 .long("pretty")
                 .about("Pretty print output")
         ).arg(
-            Arg::with_name("path")
+            Arg::new("path")
                 .value_name("PATH")
                 .about("Path of the source file")
                 .required(true)
