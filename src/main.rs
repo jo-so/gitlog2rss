@@ -1,5 +1,3 @@
-#![feature(inner_deref)]
-
 use chrono::{
     FixedOffset,
     TimeZone,
