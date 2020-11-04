@@ -121,13 +121,13 @@ channel-link: https://jo-so.de/2020-02/Maxima.html'
       <pubDate>Mon, 20 Apr 2020 12:36:16 +0200</pubDate>
     </item>
   </channel>
-</rss>```
+</rss>
+```
 
 ## Example with the whole website
 
 ``` shellsession
-% /path/to/gitlog2rss/target/release/gitlog2rss \
-  -c gitlog2rss.yaml 'src/**/*.md' > www/rss
+% /path/to/gitlog2rss/target/release/gitlog2rss -c gitlog2rss.yaml 'src/**/*.md' > www/rss
 ```
 
 # Further reading
