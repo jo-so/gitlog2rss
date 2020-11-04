@@ -4,6 +4,10 @@ version = "0.1.0"
 authors = ["Jörg Sommer <joerg@jo-so.de>"]
 edition = "2018"
 description = "Create an RSS feed from git log"
+keywords = ["git", "rss-feed"]
+categories = ["command-line-utilities"]
+repository = "https://gitlab.com/jo-so/gitlog2rss"
+license = "GPL-3.0-or-later"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
