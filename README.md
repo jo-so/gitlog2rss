@@ -137,4 +137,6 @@ channel-link: https://jo-so.de/2020-02/Maxima.html'
 
 # TODO
 
-* add [anyhow](https://crates.io/crates/anyhow) for better error messages
+* add [anyhow](https://crates.io/crates/anyhow) for better error messages;
+  [Getting line numbers with `?` as I would with
+  `unwrap()`](https://users.rust-lang.org/t/getting-line-numbers-with-as-i-would-with-unwrap/47002)
