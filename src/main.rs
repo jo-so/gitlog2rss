@@ -17,7 +17,6 @@ use git2::{
     Pathspec,
     PathspecFlags,
     Repository,
-    Sort,
 };
 use log::{
     debug,
@@ -155,7 +154,6 @@ fn main() -> Result<(), Box<dyn error::Error + 'static>> {
     let mut items = Vec::new();
 
     let mut revwalk = repo.revwalk()?;
-    revwalk.set_sorting(Sort::REVERSE | Sort::TIME)?;
     revwalk.push_head()?;
     for id in revwalk {
         let commit = repo.find_commit(id?)?;
@@ -245,21 +243,27 @@ fn main() -> Result<(), Box<dyn error::Error + 'static>> {
             };
 
             items.push(
-                ItemBuilder::default()
-                    .author(Some(author.clone()))
-                // TODO .description(Some("Neue Seite erstellt".into()));
-                // TODO .categories(vec![])
-                // TODO .guid(Some(Guid))
-                    .pub_date(Some(author_date.clone()))
-                    .title(
-                        conf[text].as_str().map(|title| title.replace("%p", &url_path))
-                    )
-                    .link(Some(base_url.join(&url_path)?.into_string()))
-                    .build().unwrap()
+                (
+                    commit.author().when(),
+                    ItemBuilder::default()
+                        .author(Some(author.clone()))
+                    // TODO .description(Some("Neue Seite erstellt".into()));
+                    // TODO .categories(vec![])
+                    // TODO .guid(Some(Guid))
+                        .pub_date(Some(author_date.clone()))
+                        .title(
+                            conf[text].as_str().map(|title| title.replace("%p", &url_path))
+                        )
+                        .link(Some(base_url.join(&url_path)?.into_string()))
+                        .build().unwrap()
+                )
             );
             debug!("New rss item for {}:{}", commit.id(), path)
         }
     }
+
+    items.sort_unstable_by_key(|e| e.0);
+    let items = items.into_iter().map(|e| e.1).collect::<Vec<_>>();
 
     let chan = ChannelBuilder::default()
         .title(conf["channel-title"].as_str().unwrap())
