@@ -4,6 +4,12 @@ This tool reads the history from one or multiple files from git and builds an
 RSS feed. Commits they contain `no-rss` in a whole line in their description are
 excluded.
 
+# Install
+
+To install the *gitlog2rss* use Rust's package manager *cargo*:
+
+    cargo install --git https://gitlab.com/jo-so/gitlog2rss
+
 # Usage
 
 ``` shellsession
