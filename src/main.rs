@@ -2,14 +2,6 @@ use chrono::{
     FixedOffset,
     TimeZone,
 };
-use clap::{
-    crate_authors,
-    crate_description,
-    crate_name,
-    crate_version,
-    App,
-    Arg,
-};
 use git2::{
     Delta,
     DiffFindOptions,
@@ -46,41 +38,41 @@ fn rfc822_time(time: &git2::Time) -> String {
 }
 
 fn main() -> Result<(), Box<dyn error::Error + 'static>> {
-    let args = App::new(crate_name!())
-        .version(crate_version!())
-        .author(crate_authors!(", "))
-        .about(crate_description!())
+    let args = clap::Command::new(clap::crate_name!())
+        .version(clap::crate_version!())
+        .author(clap::crate_authors!(", "))
+        .about(clap::crate_description!())
         .arg(
-            Arg::new("conf")
+            clap::Arg::new("conf")
                 .short('c')
                 .long("conf")
-                .takes_value(true)
+                .num_args(1)
                 .value_name("FILE")
                 .required(true)
-                .about("config file")
+                .help("config file")
         ).arg(
-            Arg::new("debug")
+            clap::Arg::new("debug")
                 .short('d')
                 .long("debug")
-                .about("Print debug messages")
+                .help("Print debug messages")
         ).arg(
-            Arg::new("prefix")
+            clap::Arg::new("prefix")
                 .short('p')
                 .long("prefix")
-                .takes_value(true)
+                .num_args(1)
                 .value_name("PREFIX")
-                .about("PREFIX gets removed from the beginning of file names")
+                .help("PREFIX gets removed from the beginning of file names")
         ).arg(
-            Arg::new("pretty")
+            clap::Arg::new("pretty")
                 .short('y')
                 .long("pretty")
-                .about("Pretty print output")
+                .help("Pretty print output")
         ).arg(
-            Arg::new("path")
+            clap::Arg::new("path")
                 .value_name("PATH")
-                .about("Path of the source file")
+                .help("Path of the source file")
                 .required(true)
-                .multiple(true)
+                .num_args(1..)
         ).get_matches();
 
     {
@@ -94,7 +86,7 @@ fn main() -> Result<(), Box<dyn error::Error + 'static>> {
             _ => {},
         }
 
-        if args.is_present("debug") {
+        if args.contains_id("debug") {
             logger.filter_level(log::LevelFilter::Trace);
         }
 
@@ -102,7 +94,7 @@ fn main() -> Result<(), Box<dyn error::Error + 'static>> {
     }
 
     let conf = {
-        let txt = match args.value_of("conf").unwrap() {
+        let txt = match *args.get_one("conf").unwrap() {
             "-" => {
                 info!("Going to read config from stdin");
                 let mut buf = String::new();
@@ -123,7 +115,7 @@ fn main() -> Result<(), Box<dyn error::Error + 'static>> {
         .ignore_submodules(true)
         .ignore_whitespace(true);
 
-    for e in args.values_of("path").unwrap() {
+    for e in args.get_many::<&str>("path").unwrap() {
         info!("using path filter {}", e);
         diff_opts.pathspec(e);
     }
@@ -147,7 +139,8 @@ fn main() -> Result<(), Box<dyn error::Error + 'static>> {
     };
 
     let base_url = url::Url::parse(conf["base-url"].as_str().unwrap())?;
-    let strip_prefix = args.value_of("prefix")
+    let strip_prefix = args.get_one("prefix")
+        .copied()
         .or_else(|| conf["strip-prefix"].as_str())
         .unwrap_or("");
 
@@ -254,8 +247,8 @@ fn main() -> Result<(), Box<dyn error::Error + 'static>> {
                         .title(
                             conf[text].as_str().map(|title| title.replace("%p", &url_path))
                         )
-                        .link(Some(base_url.join(&url_path)?.into_string()))
-                        .build().unwrap()
+                        .link(Some(base_url.join(&url_path)?.into()))
+                        .build()
                 )
             );
             debug!("New rss item for {}:{}", commit.id(), path)
@@ -304,10 +297,9 @@ fn main() -> Result<(), Box<dyn error::Error + 'static>> {
                 )
         )
         .items(items)
-        .build()
-        .unwrap();
+        .build();
 
-    if args.is_present("pretty") {
+    if args.contains_id("pretty") {
         chan.pretty_write_to(&mut io::stdout(), b' ', 2)?;
         println!("");
     } else {

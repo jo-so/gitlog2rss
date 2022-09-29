@@ -13,11 +13,11 @@ license = "GPL-3.0-or-later"
 
 [dependencies]
 chrono = "0.4.0"
-clap = "3.0.0-beta"
-env_logger = "0.8.0"
-git2 = "0.13.0"
+clap = { version = "4.0.2", features = ["cargo"] }
+env_logger = "0.9.1"
+git2 = "0.15.0"
 humantime = "2.0.0"
 log = "0.4.0"
-rss = "1.0.0"
+rss = "2.0.1"
 url = "2.0.0"
 yaml-rust = "0.4.0"
