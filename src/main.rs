@@ -32,8 +32,11 @@ use yaml_rust::{
 };
 
 fn rfc822_time(time: &git2::Time) -> String {
-    FixedOffset::east(time.offset_minutes() * 60)
-        .timestamp(time.seconds(), 0)
+    FixedOffset::east_opt(time.offset_minutes() * 60)
+        .unwrap_or_else(|| panic!("Timestamp with invalid offset: {}", time.offset_minutes()))
+        .timestamp_opt(time.seconds(), 0)
+        .single()
+        .unwrap_or_else(|| panic!("Timestamp with invalid seconds: {}", time.seconds()))
         .to_rfc2822()
 }
 
