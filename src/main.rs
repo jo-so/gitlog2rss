@@ -2,6 +2,7 @@ use chrono::{
     FixedOffset,
     TimeZone,
 };
+use clap::{Arg, ValueHint};
 use git2::{
     Delta,
     DiffFindOptions,
@@ -46,36 +47,41 @@ fn main() -> Result<(), Box<dyn error::Error + 'static>> {
         .author(clap::crate_authors!(", "))
         .about(clap::crate_description!())
         .arg(
-            clap::Arg::new("conf")
+            Arg::new("conf")
                 .short('c')
                 .long("conf")
                 .num_args(1)
                 .value_name("FILE")
                 .required(true)
+                .value_hint(ValueHint::FilePath)
+                .value_parser(clap::builder::NonEmptyStringValueParser::new())
                 .help("config file")
         ).arg(
-            clap::Arg::new("debug")
+            Arg::new("debug")
                 .short('d')
                 .long("debug")
                 .help("Print debug messages")
         ).arg(
-            clap::Arg::new("prefix")
+            Arg::new("prefix")
                 .short('p')
                 .long("prefix")
                 .num_args(1)
                 .value_name("PREFIX")
+                .value_hint(ValueHint::Other)
+                .value_parser(clap::builder::NonEmptyStringValueParser::new())
                 .help("PREFIX gets removed from the beginning of file names")
         ).arg(
-            clap::Arg::new("pretty")
+            Arg::new("pretty")
                 .short('y')
                 .long("pretty")
                 .help("Pretty print output")
         ).arg(
-            clap::Arg::new("path")
+            Arg::new("path")
                 .value_name("PATH")
                 .help("Path of the source file")
                 .required(true)
                 .num_args(1..)
+                .value_hint(ValueHint::AnyPath)
         ).get_matches();
 
     {
@@ -97,13 +103,14 @@ fn main() -> Result<(), Box<dyn error::Error + 'static>> {
     }
 
     let conf = {
-        let txt = match *args.get_one("conf").unwrap() {
+        let txt = match args.get_one::<String>("conf").unwrap().as_str() {
             "-" => {
                 info!("Going to read config from stdin");
                 let mut buf = String::new();
                 io::stdin().read_to_string(&mut buf)?;
                 buf
             }
+
             path => {
                 info!("Going to read config file {}", path);
                 fs::read_to_string(path)?
@@ -118,7 +125,7 @@ fn main() -> Result<(), Box<dyn error::Error + 'static>> {
         .ignore_submodules(true)
         .ignore_whitespace(true);
 
-    for e in args.get_many::<&str>("path").unwrap() {
+    for e in args.get_many::<String>("path").unwrap() {
         info!("using path filter {}", e);
         diff_opts.pathspec(e);
     }
