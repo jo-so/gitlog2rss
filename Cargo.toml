@@ -1,6 +1,6 @@
 [package]
 name = "gitlog2rss"
-version = "1.1.1"
+version = "1.2.0"
 authors = ["Jörg Sommer <joerg@jo-so.de>"]
 edition = "2018"
 description = "Create an RSS feed from git log"
