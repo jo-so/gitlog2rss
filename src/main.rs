@@ -220,7 +220,7 @@ fn main() -> Result<(), Box<dyn error::Error + 'static>> {
             let path = file.path().unwrap();
 
             if let Some(ref ign) = ignored_files {
-                if ign.matches_path(&path, PathspecFlags::default()) {
+                if ign.matches_path(path, PathspecFlags::default()) {
                     info!("Skipping delta of ignored file {} in commit {}",
                           path.display(), commit.id());
                     continue;
@@ -304,7 +304,7 @@ fn main() -> Result<(), Box<dyn error::Error + 'static>> {
 
     if args.contains_id("pretty") {
         chan.pretty_write_to(&mut io::stdout(), b' ', 2)?;
-        println!("");
+        println!();
     } else {
         chan.write_to(&mut io::stdout())?;
     }
