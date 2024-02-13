@@ -14,8 +14,8 @@ license = "GPL-3.0-or-later"
 [dependencies]
 chrono = "0.4.23"
 clap = { version = "4.0.29", features = ["cargo"] }
-env_logger = "0.10.0"
-git2 = "0.15.0"
+env_logger = "0.11.1"
+git2 = "0.18.2"
 humantime = "2.1.0"
 log = "0.4.17"
 rss = "2.0.1"
